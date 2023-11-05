@@ -4,8 +4,6 @@ import ru.toporkov.entity.Currency;
 import ru.toporkov.exception.DAOException;
 import ru.toporkov.util.ConnectionManager;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -14,6 +12,7 @@ import java.util.Optional;
 
 public class CurrencyDAO implements DAO<Integer, Currency> {
 
+    private static final CurrencyDAO INSTANCE = new CurrencyDAO();
     private static final String FIND_ALL_SQL = """
             SELECT id, code, full_name, sign
             FROM currency
@@ -36,6 +35,12 @@ public class CurrencyDAO implements DAO<Integer, Currency> {
             DELETE FROM currency
             WHERE id = ?
             """;
+
+    private CurrencyDAO() {}
+
+    public static CurrencyDAO getInstance() {
+        return INSTANCE;
+    }
 
     @Override
     public List<Currency> findAll() {
