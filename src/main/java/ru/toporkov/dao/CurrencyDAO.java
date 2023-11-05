@@ -63,7 +63,7 @@ public class CurrencyDAO implements DAO<Integer, Currency> {
 
             return result;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DAOException(e);
         }
     }
 

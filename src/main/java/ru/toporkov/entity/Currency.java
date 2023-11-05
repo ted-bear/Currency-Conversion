@@ -18,16 +18,6 @@ public class Currency {
     }
 
     public Currency(CurrencyBuilder currencyBuilder) {
-        if (currencyBuilder == null) {
-            throw new IllegalArgumentException("Please provide currency builder to build entity");
-        }
-        if (currencyBuilder.id < 0) {
-            throw new IllegalArgumentException("Please provide valid currency id");
-        }
-        if (currencyBuilder.code == null ||currencyBuilder.code.trim().isEmpty()) {
-            throw new IllegalArgumentException("Please provide valid currency code");
-        }
-
         this.id = currencyBuilder.id;
         this.code = currencyBuilder.code;
         this.fullName = currencyBuilder.fullName;
@@ -124,18 +114,7 @@ public class Currency {
         }
 
         public Currency build() {
-            Currency currency = null;
-            if (validateCurrency()) {
-                currency = new Currency(this);
-            } else {
-                System.out.println("Sorry! Currency objects can't be build without required details");
-            }
-
-            return currency;
-        }
-
-        private boolean validateCurrency() {
-            return (id >= 0 && code != null && !code.trim().isEmpty());
+            return new Currency(this);
         }
     }
 }
