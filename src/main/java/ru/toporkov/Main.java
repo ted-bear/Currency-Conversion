@@ -18,7 +18,5 @@ public class Main {
         } finally {
             ConnectionManager.closePool();
         }
-//        currencyDAO.save(currency);
-
     }
 }

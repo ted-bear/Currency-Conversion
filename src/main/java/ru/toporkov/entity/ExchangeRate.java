@@ -20,16 +20,6 @@ public class ExchangeRate {
     }
 
     public ExchangeRate(ExchangeRateBuilder exchangeRateBuilder) {
-        if (exchangeRateBuilder == null) {
-            throw new IllegalArgumentException("Please provide exchange builder");
-        }
-        if (exchangeRateBuilder.id < 0 ) {
-            throw new IllegalArgumentException("Please provide valid exchange builder id");
-        }
-        if (exchangeRateBuilder.baseCurrencyId < 0 || exchangeRateBuilder.targetCurrencyId < 0) {
-            throw new IllegalArgumentException("Please provide valid currencies ids");
-        }
-
         this.id = exchangeRateBuilder.id;
         this.baseCurrencyId = exchangeRateBuilder.baseCurrencyId;
         this.targetCurrencyId = exchangeRateBuilder.targetCurrencyId;
@@ -77,7 +67,7 @@ public class ExchangeRate {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ExchangeRate that = (ExchangeRate) o;
-        return id == that.id && baseCurrencyId == that.baseCurrencyId && targetCurrencyId == that.targetCurrencyId && Objects.equals(rate, that.rate);
+        return Objects.equals(id, that.id) && Objects.equals(baseCurrencyId, that.baseCurrencyId) && Objects.equals(targetCurrencyId, that.targetCurrencyId) && Objects.equals(rate, that.rate);
     }
 
     @Override
@@ -122,17 +112,7 @@ public class ExchangeRate {
         }
 
         public ExchangeRate build() {
-            ExchangeRate rate = null;
-            if (validateExchangeRate()) {
-                rate = new ExchangeRate(this);
-            } else {
-                System.out.println("Sorry! ExchangeRate objects can't be build without required details");
-            }
-            return rate;
-        }
-
-        private boolean validateExchangeRate() {
-            return this.id > -1 && this.targetCurrencyId > -1 && this.baseCurrencyId > -1;
+            return new ExchangeRate(this);
         }
     }
 }
