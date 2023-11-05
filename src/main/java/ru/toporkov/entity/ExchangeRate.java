@@ -4,15 +4,15 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 public class ExchangeRate {
-    private int id;
-    private int baseCurrencyId;
-    private int targetCurrencyId;
+    private Integer id;
+    private Integer baseCurrencyId;
+    private Integer targetCurrencyId;
     private BigDecimal rate;
 
     public ExchangeRate() {
     }
 
-    public ExchangeRate(int id, int baseCurrencyId, int targetCurrencyId, BigDecimal rate) {
+    public ExchangeRate(Integer id, Integer baseCurrencyId, Integer targetCurrencyId, BigDecimal rate) {
         this.id = id;
         this.baseCurrencyId = baseCurrencyId;
         this.targetCurrencyId = targetCurrencyId;
@@ -36,27 +36,27 @@ public class ExchangeRate {
         this.rate = exchangeRateBuilder.rate;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public int getBaseCurrencyId() {
+    public Integer getBaseCurrencyId() {
         return baseCurrencyId;
     }
 
-    public void setBaseCurrencyId(int baseCurrencyId) {
+    public void setBaseCurrencyId(Integer baseCurrencyId) {
         this.baseCurrencyId = baseCurrencyId;
     }
 
-    public int getTargetCurrencyId() {
+    public Integer getTargetCurrencyId() {
         return targetCurrencyId;
     }
 
-    public void setTargetCurrencyId(int targetCurrencyId) {
+    public void setTargetCurrencyId(Integer targetCurrencyId) {
         this.targetCurrencyId = targetCurrencyId;
     }
 
@@ -96,22 +96,22 @@ public class ExchangeRate {
     }
 
     public static class ExchangeRateBuilder {
-        protected int id;
-        protected int baseCurrencyId;
-        protected int targetCurrencyId;
+        protected Integer id;
+        protected Integer baseCurrencyId;
+        protected Integer targetCurrencyId;
         protected BigDecimal rate;
 
-        public ExchangeRateBuilder id(int id) {
+        public ExchangeRateBuilder id(Integer id) {
             this.id = id;
             return this;
         }
 
-        public ExchangeRateBuilder baseCurrencyId(int baseCurrencyId) {
+        public ExchangeRateBuilder baseCurrencyId(Integer baseCurrencyId) {
             this.baseCurrencyId = baseCurrencyId;
             return this;
         }
 
-        public ExchangeRateBuilder targetCurrencyId(int targetCurrencyId) {
+        public ExchangeRateBuilder targetCurrencyId(Integer targetCurrencyId) {
             this.targetCurrencyId = targetCurrencyId;
             return this;
         }

@@ -3,14 +3,14 @@ package ru.toporkov.entity;
 import java.util.Objects;
 
 public class Currency {
-    private int id;
+    private Integer id;
     private String code;
     private String fullName;
     private String sign;
 
     public Currency() {}
 
-    public Currency(int id, String code, String fullName, String sign) {
+    public Currency(Integer id, String code, String fullName, String sign) {
         this.id = id;
         this.code = code;
         this.fullName = fullName;
@@ -34,11 +34,11 @@ public class Currency {
         this.sign = currencyBuilder.sign;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -94,7 +94,7 @@ public class Currency {
     }
 
     public static class CurrencyBuilder {
-        protected int id;
+        protected Integer id;
         protected String code;
         protected String fullName;
         protected String sign;
@@ -103,7 +103,7 @@ public class Currency {
             super();
         }
 
-        public CurrencyBuilder id(int id) {
+        public CurrencyBuilder id(Integer id) {
             this.id = id;
             return this;
         }
