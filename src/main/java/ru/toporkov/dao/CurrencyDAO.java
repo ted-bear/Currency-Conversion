@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public class CurrencyDAO implements DAO<Integer, Currency> {
 
-    private static final CurrencyDAO INSTANCE = new CurrencyDAO();
+    private static volatile CurrencyDAO INSTANCE;
     private static final String FIND_ALL_SQL = """
             SELECT id, code, full_name, sign
             FROM currency
@@ -39,6 +39,13 @@ public class CurrencyDAO implements DAO<Integer, Currency> {
     private CurrencyDAO() {}
 
     public static CurrencyDAO getInstance() {
+        if (INSTANCE == null) {
+            synchronized (CurrencyDAO.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new CurrencyDAO();
+                }
+            }
+        }
         return INSTANCE;
     }
 
