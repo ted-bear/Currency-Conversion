@@ -14,6 +14,7 @@ public class Main {
         CurrencyDAO currencyDAO = CurrencyDAO.getInstance();
 
         try {
+            currencyDAO.delete(4);
             currencyDAO.save(currency);
         } finally {
             ConnectionManager.closePool();

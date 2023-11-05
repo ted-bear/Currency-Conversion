@@ -16,6 +16,7 @@ public final class ConnectionManager {
     private static final String DB_URL_KEY = "db.url";
     private static final String DB_USER_KEY = "db.user";
     private static final String DB_PASSWORD_KEY = "db.password";
+    private static final String DB_DRIVER_KEY = "db.driver";
     private static final String DB_POOL_SIZE_KEY = "db.pool.size";
     private static final Integer DB_DEFAULT_POOL_SIZE = 10;
     private static BlockingQueue<Connection> pool;
@@ -44,7 +45,7 @@ public final class ConnectionManager {
 
     private static void loadDriver() {
         try {
-            Class.forName("org.postgresql.Driver");
+            Class.forName(PropertiesUtil.get(DB_DRIVER_KEY));
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("Couldn't load SQL driver", e);
         }
