@@ -15,7 +15,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @WebServlet(UrlPath.CURRENCIES)
-public class CurrenciesGetterServlet extends HttpServlet {
+public class CurrenciesServlet extends HttpServlet {
 
     private static final CurrencyService currencyService = CurrencyService.getInstance();
     private final Gson gson = new Gson();
