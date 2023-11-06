@@ -50,7 +50,7 @@ public class CurrencyDAO implements DAO<Integer, Currency> {
     }
 
     @Override
-    public List<Currency> findAll() {
+    public List<Currency> findAll() throws SQLException {
         try (var connection = ConnectionManager.get();
              var preparedStatement = connection.prepareStatement(FIND_ALL_SQL)) {
 
@@ -62,8 +62,6 @@ public class CurrencyDAO implements DAO<Integer, Currency> {
             }
 
             return result;
-        } catch (SQLException e) {
-            throw new DAOException(e);
         }
     }
 
@@ -136,7 +134,7 @@ public class CurrencyDAO implements DAO<Integer, Currency> {
                 .id(resultSet.getObject(1, Integer.class))
                 .code(resultSet.getObject(2, String.class))
                 .fullName(resultSet.getObject(3, String.class))
-                .fullName(resultSet.getObject(4, String.class))
+                .sign(resultSet.getObject(4, String.class))
                 .build();
     }
 }
