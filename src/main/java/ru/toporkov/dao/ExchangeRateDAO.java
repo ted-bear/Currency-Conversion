@@ -42,7 +42,7 @@ public class ExchangeRateDAO implements DAO<Integer, ExchangeRate> {
 
     private ExchangeRateDAO() {}
 
-    public ExchangeRateDAO getInstance() {
+    public static ExchangeRateDAO getInstance() {
         if (instance == null) {
             synchronized (ExchangeRateDAO.class) {
                 if (instance == null) {
