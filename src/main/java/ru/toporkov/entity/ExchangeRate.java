@@ -58,7 +58,7 @@ public class ExchangeRate {
         this.rate = rate;
     }
 
-    public ExchangeRateBuilder builder() {
+    public static ExchangeRateBuilder builder() {
         return new ExchangeRateBuilder();
     }
 
