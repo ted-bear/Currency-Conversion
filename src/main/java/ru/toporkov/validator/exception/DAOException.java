@@ -1,4 +1,4 @@
-package ru.toporkov.exception;
+package ru.toporkov.validator.exception;
 
 public class DAOException extends RuntimeException {
 

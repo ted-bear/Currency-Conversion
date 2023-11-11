@@ -24,10 +24,6 @@ public class CurrencyMapper {
             }
         }
 
-        if (fullName == null || sign == null || code == null) {
-            throw new IllegalArgumentException("Invalid parameters for currency");
-        }
-
         return new CreateCurrencyDTO(code, fullName, sign);
     }
 }

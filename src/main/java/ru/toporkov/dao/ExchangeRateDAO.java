@@ -1,12 +1,10 @@
 package ru.toporkov.dao;
 
 import ru.toporkov.entity.ExchangeRate;
-import ru.toporkov.exception.DAOException;
+import ru.toporkov.validator.exception.DAOException;
 import ru.toporkov.util.ConnectionManager;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;

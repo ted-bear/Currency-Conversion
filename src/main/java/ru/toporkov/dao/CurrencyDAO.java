@@ -1,7 +1,7 @@
 package ru.toporkov.dao;
 
 import ru.toporkov.entity.Currency;
-import ru.toporkov.exception.DAOException;
+import ru.toporkov.validator.exception.DAOException;
 import ru.toporkov.util.ConnectionManager;
 
 import java.sql.ResultSet;
@@ -116,7 +116,7 @@ public class CurrencyDAO implements DAO<Integer, Currency> {
     }
 
     @Override
-    public Currency save(Currency entity) {
+    public Currency save(Currency entity) throws SQLException {
         try (var connection = ConnectionManager.get();
              var preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -129,8 +129,6 @@ public class CurrencyDAO implements DAO<Integer, Currency> {
             generatedKeys.next();
             entity.setId(generatedKeys.getObject("id", Integer.class));
             return entity;
-        } catch (SQLException e) {
-            throw new DAOException(e);
         }
     }
 

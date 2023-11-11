@@ -4,6 +4,7 @@ import ru.toporkov.dao.CurrencyDAO;
 import ru.toporkov.dto.CreateCurrencyDTO;
 import ru.toporkov.entity.Currency;
 import ru.toporkov.mapper.CreateCurrencyMapper;
+import ru.toporkov.validator.CreateCurrencyValidator;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -11,8 +12,9 @@ import java.util.List;
 public class CurrencyService {
 
     private static volatile CurrencyService currencyService;
-    private static final CurrencyDAO currencyDAO = CurrencyDAO.getInstance();
-    private static final CreateCurrencyMapper mapper = CreateCurrencyMapper.getInstance();
+    private final CurrencyDAO currencyDAO = CurrencyDAO.getInstance();
+    private final CreateCurrencyMapper mapper = CreateCurrencyMapper.getInstance();
+    private final CreateCurrencyValidator validator = CreateCurrencyValidator.getInstance();
 
     private CurrencyService() {}
 
@@ -32,8 +34,12 @@ public class CurrencyService {
         return currencyDAO.findAll();
     }
 
-    public Integer saveCurrency(CreateCurrencyDTO createCurrencyDTO) {
+    public Currency saveCurrency(CreateCurrencyDTO createCurrencyDTO) throws SQLException {
+        var valid = validator.isValid(createCurrencyDTO);
+
         Currency currency = mapper.mapFrom(createCurrencyDTO);
-        return currencyDAO.save(currency);
+        currencyDAO.save(currency);
+
+        return currency;
     }
 }
