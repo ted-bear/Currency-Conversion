@@ -1,5 +1,6 @@
 package ru.toporkov.filter;
 
+import jakarta.servlet.DispatcherType;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -10,7 +11,7 @@ import jakarta.servlet.annotation.WebFilter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-@WebFilter
+@WebFilter(value = "/*", dispatcherTypes = DispatcherType.REQUEST)
 public class EncodingFilter implements Filter {
 
 
