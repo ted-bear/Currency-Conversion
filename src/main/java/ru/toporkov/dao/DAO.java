@@ -14,5 +14,5 @@ public interface DAO<K, T> {
 
     int update(T entity);
 
-    int save(T entity);
+    T save(T entity);
 }
