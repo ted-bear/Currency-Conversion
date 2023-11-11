@@ -6,9 +6,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import ru.toporkov.dto.CreateCurrencyDTO;
 import ru.toporkov.entity.Currency;
 import ru.toporkov.service.CurrencyService;
 import ru.toporkov.util.UrlPath;
+import ru.toporkov.validator.Error;
 import ru.toporkov.validator.ErrorMessage;
 import ru.toporkov.validator.exception.ApplicationException;
 
@@ -23,39 +25,44 @@ import static ru.toporkov.validator.ErrorMessage.*;
 public class CurrenciesServlet extends HttpServlet {
 
     private static final CurrencyService currencyService = CurrencyService.getInstance();
-//    TODO: Заменить на jackson
     private final Gson gson = new Gson();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         List<Currency> allCurrencies;
-        try (var writer = resp.getWriter()) {
-            allCurrencies = currencyService.findAll();
-            var currenciesJson = gson.toJson(allCurrencies);
+        String responseJson;
 
-            writer.write(currenciesJson);
+        try {
+            allCurrencies = currencyService.findAll();
+            responseJson = gson.toJson(allCurrencies);
         } catch (SQLException e) {
-            resp.sendError(DATABASE_UNAVAILABLE.getStatus(), DATABASE_UNAVAILABLE.getMessage());
+            responseJson = gson.toJson(Error.of(String.valueOf(DATABASE_UNAVAILABLE.getStatus()), DATABASE_UNAVAILABLE.getMessage()));
+            resp.setStatus(DATABASE_UNAVAILABLE.getStatus());
+        }
+
+        try (var writer = resp.getWriter()) {
+            writer.write(responseJson);
         }
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try (var reader = req.getReader()) {
-            var line = reader.readLine();
-            var currencyDTO = mapStringToCreateCurrencyDTO(line);
-            Currency entity;
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        var currencyDTO = new CreateCurrencyDTO(req.getParameter("code").trim(),
+                req.getParameter("name").trim(),
+                req.getParameter("sign").trim());
+        Currency entity;
+        String responseJson;
 
-            try (var writer = resp.getWriter()) {
-                entity = currencyService.saveCurrency(currencyDTO);
-                var currencyJson = gson.toJson(entity);
+        try {
+            entity = currencyService.saveCurrency(currencyDTO);
+            responseJson = gson.toJson(entity);
+        } catch (ApplicationException e) {
+            responseJson = gson.toJson(Error.of(String.valueOf(e.getError().getStatus()), e.getError().getMessage()));
+            resp.setStatus(e.getError().getStatus());
+        }
 
-                writer.write(currencyJson);
-            } catch (SQLException e) {
-                resp.sendError(DATABASE_UNAVAILABLE.getStatus(), DATABASE_UNAVAILABLE.getMessage());
-            } catch (ApplicationException e) {
-                resp.sendError(e.getError().getStatus(), e.getError().getMessage());
-            }
+        try (var writer = resp.getWriter()) {
+            writer.write(responseJson);
         }
     }
 }

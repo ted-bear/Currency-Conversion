@@ -11,7 +11,6 @@ public enum ErrorMessage {
     INVALID_CURRENCY_ISO_CODE(HttpServletResponse.SC_BAD_REQUEST, "Length of ISO code should be 3"),
     DATABASE_UNAVAILABLE(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database unavailable");
 
-
     private final String message;
     private final Integer status;
 

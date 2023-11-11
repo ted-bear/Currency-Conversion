@@ -4,6 +4,8 @@ import ru.toporkov.entity.Currency;
 import ru.toporkov.validator.exception.DAOException;
 import ru.toporkov.util.ConnectionManager;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -20,6 +22,9 @@ public class CurrencyDAO implements DAO<Integer, Currency> {
             """;
     private static final String FIND_BY_ID_SQL = FIND_ALL_SQL + """
             WHERE id = ?
+            """;
+    private static final String FIND_BY_ISO_CODE_SQL = FIND_ALL_SQL + """
+            WHERE code = ?
             """;
     private static final String UPDATE_SQL = """
             UPDATE currency
@@ -129,6 +134,25 @@ public class CurrencyDAO implements DAO<Integer, Currency> {
             generatedKeys.next();
             entity.setId(generatedKeys.getObject("id", Integer.class));
             return entity;
+        }
+    }
+
+    public Optional<Currency> findByIsoCode(String code) {
+        try (var connection = ConnectionManager.get();
+             var preparedStatement = connection.prepareStatement(FIND_BY_ISO_CODE_SQL)) {
+
+            preparedStatement.setObject(1, code);
+
+            var resultSet = preparedStatement.executeQuery();
+            Currency currency = null;
+
+            if (resultSet.next()) {
+                currency = buildCurrency(resultSet);
+            }
+
+            return Optional.ofNullable(currency);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
