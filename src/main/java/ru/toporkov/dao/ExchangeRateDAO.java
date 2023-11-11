@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -118,14 +119,19 @@ public class ExchangeRateDAO implements DAO<Integer, ExchangeRate> {
     }
 
     @Override
-    public int save(ExchangeRate entity) {
+    public ExchangeRate save(ExchangeRate entity) {
         try (var connection = ConnectionManager.get();
-             var preparedStatement = connection.prepareStatement(SAVE_SQL)) {
+             var preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setObject(1, entity.getBaseCurrencyId());
             preparedStatement.setObject(2, entity.getTargetCurrencyId());
             preparedStatement.setObject(3, entity.getRate());
 
-            return preparedStatement.executeUpdate();
+            preparedStatement.executeUpdate();
+            var generatedKeys = preparedStatement.getGeneratedKeys();
+            generatedKeys.next();
+            entity.setId(generatedKeys.getObject("id", Integer.class));
+
+            return entity;
         } catch (SQLException e) {
             throw new DAOException(e);
         }
