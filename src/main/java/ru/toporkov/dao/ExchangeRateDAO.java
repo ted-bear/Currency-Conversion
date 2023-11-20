@@ -53,7 +53,7 @@ public class ExchangeRateDAO implements DAO<Integer, ExchangeRate> {
     }
 
     @Override
-    public List<ExchangeRate> findAll() {
+    public List<ExchangeRate> findAll() throws SQLException {
         try (var connection = ConnectionManager.get();
              var preparedStatement = connection.prepareStatement(FIND_ALL_SQL)) {
             var resultSet = preparedStatement.executeQuery();
@@ -65,8 +65,6 @@ public class ExchangeRateDAO implements DAO<Integer, ExchangeRate> {
             }
 
             return result;
-        } catch (SQLException e) {
-            throw new DAOException(e);
         }
     }
 
