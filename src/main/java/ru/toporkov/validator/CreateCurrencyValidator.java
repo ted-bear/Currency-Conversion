@@ -6,7 +6,7 @@ import ru.toporkov.validator.exception.CurrencyAlreadyExistException;
 import ru.toporkov.validator.exception.InvalidFormFieldException;
 import ru.toporkov.validator.exception.InvalidLengthISOCodeException;
 
-import java.util.Optional;
+import java.sql.SQLException;
 
 import static ru.toporkov.validator.ErrorMessage.CURRENCY_ALREADY_EXISTS;
 import static ru.toporkov.validator.ErrorMessage.INVALID_CURRENCY_ISO_CODE;
@@ -32,7 +32,7 @@ public class CreateCurrencyValidator implements Validator<CreateCurrencyDTO> {
     }
 
     @Override
-    public boolean isValid(CreateCurrencyDTO object) throws CurrencyAlreadyExistException, InvalidFormFieldException, InvalidLengthISOCodeException {
+    public boolean isValid(CreateCurrencyDTO object) throws CurrencyAlreadyExistException, InvalidFormFieldException, InvalidLengthISOCodeException, SQLException {
 
         if (currencyDAO.findByIsoCode(object.code()).isPresent()) {
             throw new CurrencyAlreadyExistException(CURRENCY_ALREADY_EXISTS);
