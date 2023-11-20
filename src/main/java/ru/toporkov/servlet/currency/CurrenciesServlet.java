@@ -1,7 +1,6 @@
 package ru.toporkov.servlet.currency;
 
 import com.google.gson.Gson;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,15 +10,13 @@ import ru.toporkov.entity.Currency;
 import ru.toporkov.service.CurrencyService;
 import ru.toporkov.util.UrlPath;
 import ru.toporkov.validator.Error;
-import ru.toporkov.validator.ErrorMessage;
 import ru.toporkov.validator.exception.ApplicationException;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-import static ru.toporkov.mapper.CurrencyMapper.mapStringToCreateCurrencyDTO;
-import static ru.toporkov.validator.ErrorMessage.*;
+import static ru.toporkov.validator.ErrorMessage.DATABASE_UNAVAILABLE;
 
 @WebServlet(UrlPath.CURRENCIES)
 public class CurrenciesServlet extends HttpServlet {

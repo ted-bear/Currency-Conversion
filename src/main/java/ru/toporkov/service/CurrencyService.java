@@ -5,6 +5,7 @@ import ru.toporkov.dto.CreateCurrencyDTO;
 import ru.toporkov.entity.Currency;
 import ru.toporkov.mapper.CreateCurrencyMapper;
 import ru.toporkov.validator.CreateCurrencyValidator;
+import ru.toporkov.validator.GetCurrencyValidator;
 import ru.toporkov.validator.exception.ApplicationException;
 
 import java.sql.SQLException;
@@ -15,7 +16,8 @@ public class CurrencyService {
     private static volatile CurrencyService currencyService;
     private final CurrencyDAO currencyDAO = CurrencyDAO.getInstance();
     private final CreateCurrencyMapper mapper = CreateCurrencyMapper.getInstance();
-    private final CreateCurrencyValidator validator = CreateCurrencyValidator.getInstance();
+    private final CreateCurrencyValidator createValidator = CreateCurrencyValidator.getInstance();
+    private final GetCurrencyValidator getValidator = GetCurrencyValidator.getInstance();
 
     private CurrencyService() {}
 
@@ -37,12 +39,23 @@ public class CurrencyService {
 
     public Currency saveCurrency(CreateCurrencyDTO createCurrencyDTO) throws ApplicationException {
         try {
-            var valid = validator.isValid(createCurrencyDTO);
+            createValidator.isValid(createCurrencyDTO);
 
             Currency currency = mapper.mapFrom(createCurrencyDTO);
             currencyDAO.save(currency);
 
             return currency;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Currency getCurrencyByISOCode(String isoCode) throws ApplicationException {
+        try {
+            getValidator.isValid(isoCode);
+            var currency = currencyDAO.findByIsoCode(isoCode);
+
+            return currency.orElseGet(Currency::new);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

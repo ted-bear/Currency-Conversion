@@ -137,7 +137,7 @@ public class CurrencyDAO implements DAO<Integer, Currency> {
         }
     }
 
-    public Optional<Currency> findByIsoCode(String code) {
+    public Optional<Currency> findByIsoCode(String code) throws SQLException {
         try (var connection = ConnectionManager.get();
              var preparedStatement = connection.prepareStatement(FIND_BY_ISO_CODE_SQL)) {
 
@@ -151,8 +151,6 @@ public class CurrencyDAO implements DAO<Integer, Currency> {
             }
 
             return Optional.ofNullable(currency);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
     }
 
