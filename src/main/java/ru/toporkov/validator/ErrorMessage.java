@@ -9,7 +9,8 @@ public enum ErrorMessage {
     INVALID_FORM_FIELD(HttpServletResponse.SC_BAD_REQUEST, "A required form field is missing"),
     CURRENCY_ALREADY_EXISTS(HttpServletResponse.SC_CONFLICT, "Currency with this code already exists"),
     INVALID_CURRENCY_ISO_CODE(HttpServletResponse.SC_BAD_REQUEST, "Length of ISO code should be 3"),
-    DATABASE_UNAVAILABLE(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database unavailable");
+    DATABASE_UNAVAILABLE(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database unavailable"),
+    EXCHANGE_RATE_ALREADY_EXISTS(HttpServletResponse.SC_CONFLICT, "Exchange rate with this currencies already exists");
 
     private final String message;
     private final Integer status;
