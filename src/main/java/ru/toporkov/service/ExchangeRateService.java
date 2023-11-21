@@ -2,8 +2,10 @@ package ru.toporkov.service;
 
 import ru.toporkov.dao.ExchangeRateDAO;
 import ru.toporkov.dto.CreateExchangeRateDTO;
+import ru.toporkov.dto.GetExchangeRateDTO;
 import ru.toporkov.entity.ExchangeRate;
 import ru.toporkov.mapper.CreateExchangeRateMapper;
+import ru.toporkov.mapper.GetExchangeRateMapper;
 import ru.toporkov.validator.CreateExchangeRateValidator;
 import ru.toporkov.validator.exception.ApplicationException;
 
@@ -15,6 +17,7 @@ public class ExchangeRateService {
     private static volatile ExchangeRateService instance;
     private final ExchangeRateDAO exchangeRateDAO = ExchangeRateDAO.getInstance();
     private final CreateExchangeRateMapper exchangeRateMapper = CreateExchangeRateMapper.getInstance();
+    private final GetExchangeRateMapper getExchangeRateMapper = GetExchangeRateMapper.getInstance();
     private final CreateExchangeRateValidator exchangeRateValidator = CreateExchangeRateValidator.getInstance();
 
     private ExchangeRateService(){}
@@ -34,14 +37,14 @@ public class ExchangeRateService {
         return exchangeRateDAO.findAll();
     }
 
-    public ExchangeRate saveExchangeRate(CreateExchangeRateDTO createExchangeRateDTO) throws ApplicationException {
+    public GetExchangeRateDTO saveExchangeRate(CreateExchangeRateDTO createExchangeRateDTO) throws ApplicationException {
         try {
             exchangeRateValidator.isValid(createExchangeRateDTO);
 
             ExchangeRate exchangeRate = exchangeRateMapper.mapFrom(createExchangeRateDTO);
             exchangeRateDAO.save(exchangeRate);
 
-            return exchangeRate;
+            return getExchangeRateMapper.mapFrom(exchangeRate);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

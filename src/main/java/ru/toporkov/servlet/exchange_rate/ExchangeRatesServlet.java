@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import ru.toporkov.dto.CreateExchangeRateDTO;
-import ru.toporkov.entity.Currency;
+import ru.toporkov.dto.GetExchangeRateDTO;
 import ru.toporkov.entity.ExchangeRate;
 import ru.toporkov.service.CurrencyService;
 import ru.toporkov.service.ExchangeRateService;
@@ -53,17 +53,17 @@ public class ExchangeRatesServlet extends HttpServlet {
 
         try {
             var baseCurrencyId = currencyService.
-                    getCurrencyByISOCode(req.getParameter("baseCurrency").trim()).
+                    getCurrencyByISOCode(req.getParameter("baseCurrencyCode").trim()).
                     getId();
             var targetCurrencyId = currencyService.
-                    getCurrencyByISOCode(req.getParameter("targetCurrency").trim()).
+                    getCurrencyByISOCode(req.getParameter("targetCurrencyCode").trim()).
                     getId();
             var createExchangeRateDTO = new CreateExchangeRateDTO(
                     baseCurrencyId,
                     targetCurrencyId,
-                    BigDecimal.valueOf(Long.parseLong(req.getParameter("rate"))));
+                    BigDecimal.valueOf(Double.parseDouble(req.getParameter("rate"))));
 
-            ExchangeRate entity = exchangeRateService.saveExchangeRate(createExchangeRateDTO);
+            GetExchangeRateDTO entity = exchangeRateService.saveExchangeRate(createExchangeRateDTO);
 
             responseJson = gson.toJson(entity);
         } catch (ApplicationException e) {
