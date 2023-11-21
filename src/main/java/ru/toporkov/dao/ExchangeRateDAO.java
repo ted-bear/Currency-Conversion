@@ -5,10 +5,13 @@ import ru.toporkov.validator.exception.DAOException;
 import ru.toporkov.util.ConnectionManager;
 
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +30,9 @@ public class ExchangeRateDAO implements DAO<Integer, ExchangeRate> {
             DELETE FROM exchange_rate
             WHERE id = ?
             """;
+    private static final String FIND_BY_ISO_CODES_SQL = FIND_ALL_SQL + """
+            WHERE base_currency_id = ? AND target_currency_id = ?
+            """;
     private static final String UPDATE_SQL = """
             UPDATE exchange_rate
             SET base_currency_id = ?,
@@ -38,6 +44,7 @@ public class ExchangeRateDAO implements DAO<Integer, ExchangeRate> {
             INSERT INTO exchange_rate (base_currency_id, target_currency_id, rate)
             VALUES (?, ?, ?)
             """;
+    private final CurrencyDAO currencyDAO = CurrencyDAO.getInstance();
 
     private ExchangeRateDAO() {}
 
@@ -130,6 +137,24 @@ public class ExchangeRateDAO implements DAO<Integer, ExchangeRate> {
             return entity;
         } catch (SQLException e) {
             throw new DAOException(e);
+        }
+    }
+
+    public Optional<ExchangeRate> findByIds(Integer baseCurrencyId, Integer targetCurrencyId) throws SQLException  {
+        try (var connection = ConnectionManager.get();
+             var preparedStatement = connection.prepareStatement(FIND_BY_ISO_CODES_SQL)) {
+
+            preparedStatement.setObject(1, baseCurrencyId);
+            preparedStatement.setObject(2, targetCurrencyId);
+
+            var resultSet = preparedStatement.executeQuery();
+            ExchangeRate exchangeRate = null;
+
+            if (resultSet.next()) {
+                exchangeRate = buildExchangeRate(resultSet);
+            }
+
+            return Optional.ofNullable(exchangeRate);
         }
     }
 
