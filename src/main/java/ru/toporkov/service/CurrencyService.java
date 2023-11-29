@@ -17,7 +17,7 @@ public class CurrencyService {
     private final CurrencyDAO currencyDAO = CurrencyDAO.getInstance();
     private final CreateCurrencyMapper mapper = CreateCurrencyMapper.getInstance();
     private final CreateCurrencyValidator createValidator = CreateCurrencyValidator.getInstance();
-    private final GetCurrencyValidator getValidator = GetCurrencyValidator.getInstance();
+    private final GetCurrencyValidator getCurrencyValidator = GetCurrencyValidator.getInstance();
 
     private CurrencyService() {}
 
@@ -52,7 +52,7 @@ public class CurrencyService {
 
     public Currency getCurrencyByISOCode(String isoCode) throws ApplicationException {
         try {
-            getValidator.isValid(isoCode);
+            getCurrencyValidator.isValid(isoCode);
             var currency = currencyDAO.findByIsoCode(isoCode);
 
             return currency.orElseGet(Currency::new);

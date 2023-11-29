@@ -1,7 +1,5 @@
 package ru.toporkov.validator;
 
-import ru.toporkov.validator.exception.CurrencyAlreadyExistException;
-import ru.toporkov.validator.exception.InvalidFormFieldException;
 import ru.toporkov.validator.exception.InvalidLengthISOCodeException;
 
 import static ru.toporkov.validator.ErrorMessage.INVALID_CURRENCY_ISO_CODE;
