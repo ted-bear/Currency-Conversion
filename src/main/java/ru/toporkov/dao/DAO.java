@@ -12,7 +12,7 @@ public interface DAO<K, T> {
 
     boolean delete(K id);
 
-    int update(T entity);
+    Optional<T> update(T entity);
 
     T save(T entity) throws SQLException;
 }

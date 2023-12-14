@@ -14,6 +14,7 @@ import ru.toporkov.validator.GetExchangeRateValidator;
 import ru.toporkov.validator.exception.ApplicationException;
 import ru.toporkov.validator.exception.NotFoundExchangePairException;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
@@ -81,7 +82,35 @@ public class ExchangeRateService {
             }
 
              return getExchangeRateMapper.mapFrom(exchangeRate.orElseThrow(() -> new NotFoundExchangePairException(NO_SUCH_EXCHANGE_PAIR)));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
+    public GetExchangeRateDTO updateExchangeRate(BigDecimal newRate, String codes) throws ApplicationException {
+        try {
+            getExchangeRateValidator.isValid(codes);
+
+            var baseCurrencyCode = codes.substring(0, 3);
+            var targetCurrencyCode = codes.substring(3);
+
+            var baseCurrency = currencyDAO.findByIsoCode(baseCurrencyCode);
+            var targetCurrency = currencyDAO.findByIsoCode(targetCurrencyCode);
+
+            Optional<ExchangeRate> exchangeRate = Optional.empty();
+
+            if (baseCurrency.isPresent() && targetCurrency.isPresent()) {
+                var newExchangeRate = ExchangeRate
+                        .builder()
+                        .rate(newRate)
+                        .baseCurrencyId(baseCurrency.get().getId())
+                        .targetCurrencyId(targetCurrency.get().getId())
+                        .build();
+
+                exchangeRate = exchangeRateDAO.update(newExchangeRate);
+            }
+
+            return getExchangeRateMapper.mapFrom(exchangeRate.orElseThrow(() -> new NotFoundExchangePairException(NO_SUCH_EXCHANGE_PAIR)));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

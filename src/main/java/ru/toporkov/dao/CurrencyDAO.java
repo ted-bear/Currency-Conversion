@@ -105,16 +105,23 @@ public class CurrencyDAO implements DAO<Integer, Currency> {
     }
 
     @Override
-    public int update(Currency entity) {
+    public Optional<Currency> update(Currency entity) {
         try (var connection = ConnectionManager.get();
-             var preparedStatement = connection.prepareStatement(UPDATE_SQL)) {
+             var preparedStatement = connection.prepareStatement(UPDATE_SQL, Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setObject(1, entity.getCode());
             preparedStatement.setObject(2, entity.getFullName());
             preparedStatement.setObject(3, entity.getSign());
             preparedStatement.setObject(4, entity.getId());
 
-            return preparedStatement.executeUpdate();
+            var resultSet = preparedStatement.executeQuery();
+            Currency result = null;
+
+            if (resultSet.next()) {
+                result = buildCurrency(resultSet);
+            }
+
+            return Optional.ofNullable(result);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
