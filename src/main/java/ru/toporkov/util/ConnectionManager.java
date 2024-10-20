@@ -19,7 +19,7 @@ public final class ConnectionManager {
     private static final String DB_DRIVER_KEY = "db.driver";
     private static final String DB_POOL_SIZE_KEY = "db.pool.size";
     private static final Integer DB_DEFAULT_POOL_SIZE = 10;
-    private static BlockingQueue<Connection> pool;
+    private static BlockingQueue<Connection> connectionPoolQueue;
     private static List<Connection> sourceConnections;
 
     static {
@@ -28,17 +28,17 @@ public final class ConnectionManager {
     }
 
     private static void initConnectionPool() {
-        var poolSize = PropertiesUtil.get(DB_POOL_SIZE_KEY);
-        var size = poolSize == null ? DB_DEFAULT_POOL_SIZE : Integer.parseInt(poolSize);
-        pool = new ArrayBlockingQueue<>(size);
-        sourceConnections = new ArrayList<>(size);
+        var poolSizeFromPropertyFile = PropertiesUtil.get(DB_POOL_SIZE_KEY);
+        var initializingSizeOfPool = poolSizeFromPropertyFile == null ? DB_DEFAULT_POOL_SIZE : Integer.parseInt(poolSizeFromPropertyFile);
+        connectionPoolQueue = new ArrayBlockingQueue<>(initializingSizeOfPool);
+        sourceConnections = new ArrayList<>(initializingSizeOfPool);
 
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < initializingSizeOfPool; i++) {
             var connection = open();
             var proxyConnection = (Connection) Proxy.newProxyInstance(ConnectionManager.class.getClassLoader(),
                     new Class[]{Connection.class},
                     (proxy, method, args) -> method.getName().equals("close") ? pool.add((Connection) proxy) : method.invoke(connection, args));
-            pool.add(proxyConnection);
+            connectionPoolQueue.add(proxyConnection);
             sourceConnections.add(connection);
         }
     }
@@ -65,7 +65,7 @@ public final class ConnectionManager {
 
     public static Connection get() {
         try {
-            return pool.take();
+            return connectionPoolQueue.take();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
